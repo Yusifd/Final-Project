@@ -13,7 +13,7 @@ export const getPosts=(req,res)=>{
 }
 
 export const getPost=(req,res)=>{
-    const q ="SELECT p.id,`username`,`title`,`desc`,p.img, u.img AS userImg ,`cat`,`date` FROM users u JOIN posts p ON u.id=p.uid WHERE p.id=?"
+    const q ="SELECT p.id,`username`,`title`,`desc`,p.img, u.img AS userImg ,`cat`,`date` FROM users u JOIN posts p ON p.id WHERE p.id=?"
 
     db.query(q,[req.params.id],(err,data)=>{
         if(err) return res.status(500).json(err)
@@ -24,7 +24,7 @@ export const getPost=(req,res)=>{
 
 // Функция для добавления поста
 export const addPost = (req, res) => {
-    const q = "INSERT INTO posts (title, `desc`, img, date, cat) VALUES (?, ?, ?, ?, ?)";
+    const q = "INSERT INTO posts (`title`, `desc`, `img`, `date`, `cat`) VALUES (?,?,?,?,?)";
     
     const { title, desc, img, date, cat } = req.body;
     const values = [title, desc, img, date, cat];
@@ -53,15 +53,14 @@ export const deletePost=(req,res)=>{
 
 }
 export const updatePost=(req,res)=>{
-    const q="UPDATE posts SET `title`=?,`desc`=?,`cat`=? WHERE `id`=2"
     const postId=req.params.id
-    const values=[
-        req.body.title,
-        req.body.desc,
-        req.body.cat,  
-    ]
+    const q="UPDATE posts SET `title`=?, `desc`=?,`img`=?, `cat=?` WHERE `id`=?"
+    const { title, desc,img, cat } = req.body;
+    const values = [title, desc,img, cat,postId];
+    console.log(req.body); // Для отладки
+    
 
-    db.query(q,[...values,postId],(err,data)=>{
+    db.query(q,values,(err,data)=>{
         if(err) return res.status(500).json(err)
             return res.json(data)
     })

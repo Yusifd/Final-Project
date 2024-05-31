@@ -10,6 +10,7 @@ const corsOptions={
     credentials:true,
     withCredentials:true,
     optionSuccessStatus:200,
+    methods: ["GET", "POST", "PUT", "DELETE"]
 }
 const app=express()
 app.use(express.json())
@@ -24,11 +25,11 @@ const storage=multer.diskStorage({
     }
 })
 
+
 const upload=multer({storage})
 
 app.post('/api/upload',upload.single('file'),function (req,res){
     const file=req.file
-    // const q="INSERT INTO posts (`img`) VALUES(?)"
     res.status(200).json(file.filename)
 })
 
